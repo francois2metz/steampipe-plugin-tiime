@@ -100,11 +100,16 @@ func New(ctx context.Context, config ClientConfig) (*Client, error) {
 	return c, nil
 }
 
-func (c *Client) GetInvoices(ctx context.Context) (invoices []Invoice, err error) {
-	err = c.Get("/companies/{company_id}/invoices").
+func (c *Client) GetInvoices(ctx context.Context, paginationOpts PaginationOpts) (invoices []Invoice, pagination Pagination, err error) {
+	res := c.Get("/companies/{company_id}/invoices").
 		SetBearerAuthToken(c.token.AccessToken).
-		Do(ctx).
-		Into(&invoices)
+		SetHeader("Range", formatRange(paginationOpts)).
+		Do(ctx)
+	pagination, err = handlePagination(res)
+	if err != nil {
+		return
+	}
+	err = res.Into(&invoices)
 	return
 }
 

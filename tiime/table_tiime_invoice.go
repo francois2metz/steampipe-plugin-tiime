@@ -3,6 +3,7 @@ package tiime
 import (
 	"context"
 
+	tiime "github.com/francois2metz/steampipe-plugin-tiime/tiime/client"
 	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 )
@@ -40,13 +41,29 @@ func listInvoice(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 		plugin.Logger(ctx).Error("tiime_invoice.listInvoice", "connection_error", err)
 		return nil, err
 	}
-	invoices, err := client.GetInvoices(ctx)
-	if err != nil {
-		plugin.Logger(ctx).Error("tiime_invoice.listInvoice", err)
-		return nil, err
+	maxItem := 100
+	opts := tiime.PaginationOpts{Start: 0, End: maxItem - 1}
+
+	if d.QueryContext.Limit != nil && *d.QueryContext.Limit < int64(opts.End) {
+		opts.End = int(*d.QueryContext.Limit)
 	}
-	for _, invoice := range invoices {
-		d.StreamListItem(ctx, invoice)
+	for {
+		invoices, pagination, err := client.GetInvoices(ctx, opts)
+		if err != nil {
+			plugin.Logger(ctx).Error("tiime_invoice.listInvoice", err)
+			return nil, err
+		}
+		for _, invoice := range invoices {
+			d.StreamListItem(ctx, invoice)
+		}
+		if pagination.Max != "*" {
+			break
+		}
+		opts.Start += maxItem
+		opts.End += maxItem
+		if d.RowsRemaining(ctx) <= 0 {
+			break
+		}
 	}
 	return nil, nil
 }
