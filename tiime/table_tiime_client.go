@@ -35,8 +35,8 @@ func listClient(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData)
 		plugin.Logger(ctx).Error("tiime_client.listClient", "connection_error", err)
 		return nil, err
 	}
-	increment := 100
-	opts := tiime.PaginationOpts{Start: 0, End: increment}
+	maxItem := 100
+	opts := tiime.PaginationOpts{Start: 0, End: maxItem - 1}
 
 	if d.QueryContext.Limit != nil && *d.QueryContext.Limit < int64(opts.End) {
 		opts.End = int(*d.QueryContext.Limit)
@@ -53,8 +53,8 @@ func listClient(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData)
 		if pagination.Max != "*" {
 			break
 		}
-		opts.Start = pagination.CurrentStart + increment + 1
-		opts.End = pagination.CurrentEnd + increment + 1
+		opts.Start += maxItem
+		opts.End += maxItem
 		if d.RowsRemaining(ctx) <= 0 {
 			break
 		}

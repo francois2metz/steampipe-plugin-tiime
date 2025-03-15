@@ -118,12 +118,24 @@ func (c *Client) GetInvoice(ctx context.Context, id int64) (invoice Invoice, err
 }
 
 func (c *Client) GetClients(ctx context.Context, paginationOpts PaginationOpts) (clients []Client2, pagination Pagination, err error) {
-	req := c.Get("/companies/{company_id}/clients").
+	res := c.Get("/companies/{company_id}/clients").
 		SetBearerAuthToken(c.token.AccessToken).
-		SetHeader("Range", fmt.Sprintf("items=%d-%d", paginationOpts.Start, paginationOpts.End)).
+		SetHeader("Range", formatRange(paginationOpts)).
 		Do(ctx)
-	contentRange := strings.NewReader(req.GetHeader("Content-range"))
+	pagination, err = handlePagination(res)
+	if err != nil {
+		return
+	}
+	err = res.Into(&clients)
+	return
+}
+
+func formatRange(paginationOpts PaginationOpts) string {
+	return fmt.Sprintf("items=%d-%d", paginationOpts.Start, paginationOpts.End)
+}
+
+func handlePagination(res *req.Response) (pagination Pagination, err error) {
+	contentRange := strings.NewReader(res.GetHeader("Content-range"))
 	_, err = fmt.Fscanf(contentRange, "items %d-%d/%s", &pagination.CurrentStart, &pagination.CurrentEnd, &pagination.Max)
-	err = req.Into(&clients)
 	return
 }
