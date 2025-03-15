@@ -118,7 +118,7 @@ func (c *Client) GetInvoice(ctx context.Context, id int64) (invoice Invoice, err
 		SetPathParam("id", strconv.FormatInt(id, 10)).
 		SetBearerAuthToken(c.token.AccessToken).
 		Do(ctx).
-		Into(invoice)
+		Into(&invoice)
 	return
 }
 
