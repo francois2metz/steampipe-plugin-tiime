@@ -20,17 +20,67 @@ func tableTiimeInvoice() *plugin.Table {
 			Hydrate:    getInvoice,
 		},
 		Columns: []*plugin.Column{
-			{Name: "id", Type: proto.ColumnType_INT, Description: "Unique id of the invoice."},
-			{Name: "client_id", Type: proto.ColumnType_INT, Description: "Unique id of the client."},
-			{Name: "compiled_number", Type: proto.ColumnType_STRING, Description: "Unique number of the invoice."},
-			{Name: "number", Type: proto.ColumnType_INT, Description: "Sequence number of the invoice."},
-			{Name: "emission_date", Type: proto.ColumnType_STRING, Description: "Emission date of the invoice."},
-			{Name: "template", Type: proto.ColumnType_STRING, Description: "Template of the invoice."},
-			{Name: "color", Type: proto.ColumnType_STRING, Description: "Color of the invoice."},
-			{Name: "client_name", Type: proto.ColumnType_STRING, Description: "Client name."},
-			{Name: "total_excluding_taxes", Type: proto.ColumnType_DOUBLE, Description: "Total amount excluding taxes."},
-			{Name: "total_including_taxes", Type: proto.ColumnType_DOUBLE, Description: "Total amount including taxes."},
-			{Name: "comment", Type: proto.ColumnType_STRING, Description: "Comment."},
+			{
+				Name:        "id",
+				Type:        proto.ColumnType_INT,
+				Description: "Unique id of the invoice.",
+			},
+			{
+				Name:        "client_id",
+				Type:        proto.ColumnType_INT,
+				Description: "Unique id of the client.",
+			},
+			{
+				Name:        "compiled_number",
+				Type:        proto.ColumnType_STRING,
+				Description: "Unique number of the invoice.",
+			},
+			{
+				Name:        "number",
+				Type:        proto.ColumnType_INT,
+				Description: "Sequence number of the invoice.",
+			},
+			{
+				Name:        "emission_date",
+				Type:        proto.ColumnType_STRING,
+				Description: "Emission date of the invoice.",
+			},
+			{
+				Name:        "template",
+				Type:        proto.ColumnType_STRING,
+				Description: "Template of the invoice.",
+			},
+			{
+				Name:        "color",
+				Type:        proto.ColumnType_STRING,
+				Description: "Color of the invoice.",
+			},
+			{
+				Name:        "client_name",
+				Type:        proto.ColumnType_STRING,
+				Description: "Client name.",
+			},
+			{
+				Name:        "total_excluding_taxes",
+				Type:        proto.ColumnType_DOUBLE,
+				Description: "Total amount excluding taxes.",
+			},
+			{
+				Name:        "total_including_taxes",
+				Type:        proto.ColumnType_DOUBLE,
+				Description: "Total amount including taxes.",
+			},
+			{
+				Name:        "comment",
+				Type:        proto.ColumnType_STRING,
+				Description: "Invoice comment.",
+			},
+			{
+				Name:        "lines",
+				Type:        proto.ColumnType_JSON,
+				Description: "Lines of the invoice.",
+				Hydrate:     getInvoiceInfo,
+			},
 		},
 	}
 }
@@ -69,15 +119,28 @@ func listInvoice(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 }
 
 func getInvoice(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
+	id := d.EqualsQuals["id"].GetInt64Value()
+
+	return getInvoiceById(ctx, d, id)
+}
+
+func getInvoiceInfo(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
+	invoice := h.Item.(tiime.Invoice)
+	if invoice.Lines != nil {
+		return invoice, nil
+	}
+	return getInvoiceById(ctx, d, invoice.ID)
+}
+
+func getInvoiceById(ctx context.Context, d *plugin.QueryData, id int64) (interface{}, error) {
 	client, err := connect(ctx, d)
 	if err != nil {
-		plugin.Logger(ctx).Error("tiime_invoice.getInvoice", "connection_error", err)
+		plugin.Logger(ctx).Error("tiime_invoice.getInvoiceById", "connection_error", err)
 		return nil, err
 	}
-	id := d.EqualsQuals["id"].GetInt64Value()
 	result, err := client.GetInvoice(ctx, id)
 	if err != nil {
-		plugin.Logger(ctx).Error("tiime_invoice.getInvoice", err)
+		plugin.Logger(ctx).Error("tiime_invoice.getInvoiceById", err)
 		return nil, err
 	}
 

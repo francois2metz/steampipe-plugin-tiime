@@ -24,8 +24,17 @@ type Client struct {
 	authAPI *authentication.Authentication
 }
 
+type Line struct {
+	ID                    int     `json:"id"`
+	Description           string  `json:"description"`
+	LineAmount            float32 `json:"line_amount"`
+	InvoicingCategoryType string  `json:"invoicing_category_type"`
+	UnitAmount            float32 `json:"unit_amount"`
+	Quantity              float32 `json:"quantity"`
+}
+
 type Invoice struct {
-	ID                  int     `json:"id"`
+	ID                  int64   `json:"id"`
 	ClientID            int     `json:"client_id"`
 	CompiledNumber      string  `json:"compiled_number"`
 	Number              int     `json:"number"`
@@ -36,6 +45,7 @@ type Invoice struct {
 	TotalExcludingTaxes float32 `json:"total_excluding_taxes"`
 	TotalIncludingTaxes float32 `json:"total_including_taxes"`
 	Comment             string  `json:"comment"`
+	Lines               []Line  `json:"lines"`
 }
 
 type Client2 struct {
