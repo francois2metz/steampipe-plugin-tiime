@@ -10,12 +10,13 @@ import (
 func Plugin(ctx context.Context) *plugin.Plugin {
 	p := &plugin.Plugin{
 		Name:             "steampipe-plugin-tiime",
-		DefaultTransform: transform.FromGo().NullIfZero(),
+		DefaultTransform: transform.FromGo(),
 		ConnectionConfigSchema: &plugin.ConnectionConfigSchema{
 			NewInstance: ConfigInstance,
 			Schema:      ConfigSchema,
 		},
 		TableMap: map[string]*plugin.Table{
+			"tiime_client":  tableTiimeClient(),
 			"tiime_invoice": tableTiimeInvoice(),
 		},
 	}
