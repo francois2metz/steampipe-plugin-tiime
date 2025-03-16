@@ -33,6 +33,11 @@ type Line struct {
 	Quantity              float32 `json:"quantity"`
 }
 
+type InvoiceQueryOpts struct {
+	Status       string
+	EmissionDate string
+}
+
 type Invoice struct {
 	ID                  int64   `json:"id"`
 	ClientID            int     `json:"client_id"`
@@ -45,6 +50,8 @@ type Invoice struct {
 	TotalExcludingTaxes float32 `json:"total_excluding_taxes"`
 	TotalIncludingTaxes float32 `json:"total_including_taxes"`
 	Comment             string  `json:"comment"`
+	Title               string  `json:"title"`
+	Status              string  `json:"status"`
 	Lines               []Line  `json:"lines"`
 }
 
@@ -110,10 +117,11 @@ func New(ctx context.Context, config ClientConfig) (*Client, error) {
 	return c, nil
 }
 
-func (c *Client) GetInvoices(ctx context.Context, paginationOpts PaginationOpts) (invoices []Invoice, pagination Pagination, err error) {
+func (c *Client) GetInvoices(ctx context.Context, opts InvoiceQueryOpts, paginationOpts PaginationOpts) (invoices []Invoice, pagination Pagination, err error) {
 	res := c.Get("/companies/{company_id}/invoices").
 		SetBearerAuthToken(c.token.AccessToken).
 		SetHeader("Range", formatRange(paginationOpts)).
+		SetQueryParams(getInvoicesQueryParams(opts)).
 		Do(ctx)
 	pagination, err = handlePagination(res)
 	if err != nil {
@@ -121,6 +129,17 @@ func (c *Client) GetInvoices(ctx context.Context, paginationOpts PaginationOpts)
 	}
 	err = res.Into(&invoices)
 	return
+}
+
+func getInvoicesQueryParams(opts InvoiceQueryOpts) map[string]string {
+	var query = make(map[string]string)
+	if opts.Status != "" {
+		query["status"] = opts.Status
+	}
+	if opts.EmissionDate != "" {
+		query["emission_date"] = opts.EmissionDate
+	}
+	return query
 }
 
 func (c *Client) GetInvoice(ctx context.Context, id int64) (invoice Invoice, err error) {

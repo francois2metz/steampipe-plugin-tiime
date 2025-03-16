@@ -2,6 +2,8 @@ package tiime
 
 import (
 	"context"
+	"strings"
+	"time"
 
 	tiime "github.com/francois2metz/steampipe-plugin-tiime/tiime/client"
 	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
@@ -14,6 +16,10 @@ func tableTiimeInvoice() *plugin.Table {
 		Description: "An invoice.",
 		List: &plugin.ListConfig{
 			Hydrate: listInvoice,
+			KeyColumns: []*plugin.KeyColumn{
+				{Name: "emission_date", Operators: []string{">", ">=", "=", "<", "<="}, Require: plugin.Optional},
+				{Name: "status", Require: plugin.Optional},
+			},
 		},
 		Get: &plugin.GetConfig{
 			KeyColumns: plugin.SingleColumn("id"),
@@ -42,7 +48,7 @@ func tableTiimeInvoice() *plugin.Table {
 			},
 			{
 				Name:        "emission_date",
-				Type:        proto.ColumnType_STRING,
+				Type:        proto.ColumnType_TIMESTAMP,
 				Description: "Emission date of the invoice.",
 			},
 			{
@@ -76,6 +82,16 @@ func tableTiimeInvoice() *plugin.Table {
 				Description: "Invoice comment.",
 			},
 			{
+				Name:        "title",
+				Type:        proto.ColumnType_STRING,
+				Description: "The title of the invoice.",
+			},
+			{
+				Name:        "status",
+				Type:        proto.ColumnType_STRING,
+				Description: "The status of the invoice (draft, sent, paid, ...).",
+			},
+			{
 				Name:        "lines",
 				Type:        proto.ColumnType_JSON,
 				Description: "Lines of the invoice.",
@@ -92,13 +108,32 @@ func listInvoice(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 		return nil, err
 	}
 	maxItem := 100
-	opts := tiime.PaginationOpts{Start: 0, End: maxItem - 1}
+	paginationOpts := tiime.PaginationOpts{Start: 0, End: maxItem - 1}
 
-	if d.QueryContext.Limit != nil && *d.QueryContext.Limit < int64(opts.End) {
-		opts.End = int(*d.QueryContext.Limit)
+	if d.QueryContext.Limit != nil && *d.QueryContext.Limit < int64(paginationOpts.End) {
+		paginationOpts.End = int(*d.QueryContext.Limit)
+	}
+	status := d.EqualsQuals["status"].GetStringValue()
+	emission_date := d.Quals["emission_date"]
+	opts := tiime.InvoiceQueryOpts{
+		Status: status,
+	}
+	if emission_date != nil {
+		var date_query []string
+		for _, q := range emission_date.Quals {
+			if q.Value.GetTimestampValue() != nil {
+				date := q.Value.GetTimestampValue().AsTime().Format(time.DateOnly)
+				if q.Operator == "=" {
+					date_query = append(date_query, date)
+				} else {
+					date_query = append(date_query, q.Operator+date)
+				}
+			}
+		}
+		opts.EmissionDate = strings.Join(date_query, ",")
 	}
 	for {
-		invoices, pagination, err := client.GetInvoices(ctx, opts)
+		invoices, pagination, err := client.GetInvoices(ctx, opts, paginationOpts)
 		if err != nil {
 			plugin.Logger(ctx).Error("tiime_invoice.listInvoice", err)
 			return nil, err
@@ -109,8 +144,8 @@ func listInvoice(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 		if pagination.Max != "*" {
 			break
 		}
-		opts.Start += maxItem
-		opts.End += maxItem
+		paginationOpts.Start += maxItem
+		paginationOpts.End += maxItem
 		if d.RowsRemaining(ctx) <= 0 {
 			break
 		}
