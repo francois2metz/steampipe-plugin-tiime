@@ -9,7 +9,7 @@ Use SQL to query invoices from [Tiime][].
 
 Install the plugin with [Steampipe][]:
 
-    steampipe plugin install francois2metz/tiime
+    steampipe plugin install ghcr.io/francois2metz/tiime
 
 ## Development
 
