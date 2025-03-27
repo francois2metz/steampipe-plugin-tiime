@@ -1,5 +1,5 @@
 connection "tiime" {
-    plugin = "francois2metz/tiime"
+    plugin = "ghcr.io/francois2metz/tiime"
 
     # The Tiime email
     # This can also be set via the `TIIME_EMAIL` environment variable.
