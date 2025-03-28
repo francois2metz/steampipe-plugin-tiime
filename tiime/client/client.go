@@ -33,12 +33,29 @@ type Line struct {
 	Quantity              float32 `json:"quantity"`
 }
 
-type InvoiceQueryOpts struct {
+type ListQueryOpts struct {
 	Status       string
 	EmissionDate string
 }
 
 type Invoice struct {
+	ID                  int64   `json:"id"`
+	ClientID            int     `json:"client_id"`
+	CompiledNumber      string  `json:"compiled_number"`
+	Number              int     `json:"number"`
+	EmissionDate        string  `json:"emission_date"`
+	Template            string  `json:"template"`
+	Color               string  `json:"color"`
+	ClientName          string  `json:"client_name"`
+	TotalExcludingTaxes float32 `json:"total_excluding_taxes"`
+	TotalIncludingTaxes float32 `json:"total_including_taxes"`
+	Comment             string  `json:"comment"`
+	Title               string  `json:"title"`
+	Status              string  `json:"status"`
+	Lines               []Line  `json:"lines"`
+}
+
+type Quote struct {
 	ID                  int64   `json:"id"`
 	ClientID            int     `json:"client_id"`
 	CompiledNumber      string  `json:"compiled_number"`
@@ -117,11 +134,11 @@ func New(ctx context.Context, config ClientConfig) (*Client, error) {
 	return c, nil
 }
 
-func (c *Client) GetInvoices(ctx context.Context, opts InvoiceQueryOpts, paginationOpts PaginationOpts) (invoices []Invoice, pagination Pagination, err error) {
+func (c *Client) GetInvoices(ctx context.Context, opts ListQueryOpts, paginationOpts PaginationOpts) (invoices []Invoice, pagination Pagination, err error) {
 	res := c.Get("/companies/{company_id}/invoices").
 		SetBearerAuthToken(c.token.AccessToken).
 		SetHeader("Range", formatRange(paginationOpts)).
-		SetQueryParams(getInvoicesQueryParams(opts)).
+		SetQueryParams(getListQueryParams(opts)).
 		Do(ctx)
 	pagination, err = handlePagination(res)
 	if err != nil {
@@ -131,7 +148,21 @@ func (c *Client) GetInvoices(ctx context.Context, opts InvoiceQueryOpts, paginat
 	return
 }
 
-func getInvoicesQueryParams(opts InvoiceQueryOpts) map[string]string {
+func (c *Client) GetQuotes(ctx context.Context, opts ListQueryOpts, paginationOpts PaginationOpts) (quotes []Quote, pagination Pagination, err error) {
+	res := c.Get("/companies/{company_id}/quotations").
+		SetBearerAuthToken(c.token.AccessToken).
+		SetHeader("Range", formatRange(paginationOpts)).
+		SetQueryParams(getListQueryParams(opts)).
+		Do(ctx)
+	pagination, err = handlePagination(res)
+	if err != nil {
+		return
+	}
+	err = res.Into(&quotes)
+	return
+}
+
+func getListQueryParams(opts ListQueryOpts) map[string]string {
 	var query = make(map[string]string)
 	if opts.Status != "" {
 		query["status"] = opts.Status
@@ -148,6 +179,15 @@ func (c *Client) GetInvoice(ctx context.Context, id int64) (invoice Invoice, err
 		SetBearerAuthToken(c.token.AccessToken).
 		Do(ctx).
 		Into(&invoice)
+	return
+}
+
+func (c *Client) GetQuote(ctx context.Context, id int64) (quote Quote, err error) {
+	err = c.Get("/companies/{company_id}/quotations/{id}").
+		SetPathParam("id", strconv.FormatInt(id, 10)).
+		SetBearerAuthToken(c.token.AccessToken).
+		Do(ctx).
+		Into(&quote)
 	return
 }
 

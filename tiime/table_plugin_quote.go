@@ -10,12 +10,12 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 )
 
-func tableTiimeInvoice() *plugin.Table {
+func tableTiimeQuote() *plugin.Table {
 	return &plugin.Table{
-		Name:        "tiime_invoice",
-		Description: "An invoice.",
+		Name:        "tiime_quote",
+		Description: "A qute.",
 		List: &plugin.ListConfig{
-			Hydrate: listInvoice,
+			Hydrate: listQuote,
 			KeyColumns: []*plugin.KeyColumn{
 				{Name: "emission_date", Operators: []string{">", ">=", "=", "<", "<="}, Require: plugin.Optional},
 				{Name: "status", Require: plugin.Optional},
@@ -23,13 +23,13 @@ func tableTiimeInvoice() *plugin.Table {
 		},
 		Get: &plugin.GetConfig{
 			KeyColumns: plugin.SingleColumn("id"),
-			Hydrate:    getInvoice,
+			Hydrate:    getQuote,
 		},
 		Columns: []*plugin.Column{
 			{
 				Name:        "id",
 				Type:        proto.ColumnType_INT,
-				Description: "Unique id of the invoice.",
+				Description: "Unique id of the quote.",
 			},
 			{
 				Name:        "client_id",
@@ -39,27 +39,27 @@ func tableTiimeInvoice() *plugin.Table {
 			{
 				Name:        "compiled_number",
 				Type:        proto.ColumnType_STRING,
-				Description: "Unique number of the invoice.",
+				Description: "Unique number of the quote.",
 			},
 			{
 				Name:        "number",
 				Type:        proto.ColumnType_INT,
-				Description: "Sequence number of the invoice.",
+				Description: "Sequence number of the quote.",
 			},
 			{
 				Name:        "emission_date",
 				Type:        proto.ColumnType_TIMESTAMP,
-				Description: "Emission date of the invoice.",
+				Description: "Emission date of the qute.",
 			},
 			{
 				Name:        "template",
 				Type:        proto.ColumnType_STRING,
-				Description: "Template of the invoice.",
+				Description: "Template of the quote.",
 			},
 			{
 				Name:        "color",
 				Type:        proto.ColumnType_STRING,
-				Description: "Color of the invoice.",
+				Description: "Color of the quote.",
 			},
 			{
 				Name:        "client_name",
@@ -79,32 +79,32 @@ func tableTiimeInvoice() *plugin.Table {
 			{
 				Name:        "comment",
 				Type:        proto.ColumnType_STRING,
-				Description: "Invoice comment.",
+				Description: "Quote comment.",
 			},
 			{
 				Name:        "title",
 				Type:        proto.ColumnType_STRING,
-				Description: "The title of the invoice.",
+				Description: "The title of the quote.",
 			},
 			{
 				Name:        "status",
 				Type:        proto.ColumnType_STRING,
-				Description: "The status of the invoice (draft, sent, paid, ...).",
+				Description: "The status of the quote (saved, accepted, refused, cancelled).",
 			},
 			{
 				Name:        "lines",
 				Type:        proto.ColumnType_JSON,
-				Description: "Lines of the invoice.",
-				Hydrate:     getInvoiceInfo,
+				Description: "Lines of the quote.",
+				Hydrate:     getQuoteInfo,
 			},
 		},
 	}
 }
 
-func listInvoice(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
+func listQuote(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
 	client, err := connect(ctx, d)
 	if err != nil {
-		plugin.Logger(ctx).Error("tiime_invoice.listInvoice", "connection_error", err)
+		plugin.Logger(ctx).Error("tiime_quote.listQuote", "connection_error", err)
 		return nil, err
 	}
 	maxItem := 100
@@ -133,13 +133,13 @@ func listInvoice(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 		opts.EmissionDate = strings.Join(date_query, ",")
 	}
 	for {
-		invoices, pagination, err := client.GetInvoices(ctx, opts, paginationOpts)
+		quotes, pagination, err := client.GetQuotes(ctx, opts, paginationOpts)
 		if err != nil {
-			plugin.Logger(ctx).Error("tiime_invoice.listInvoice", err)
+			plugin.Logger(ctx).Error("tiime_quote.listQuote", err)
 			return nil, err
 		}
-		for _, invoice := range invoices {
-			d.StreamListItem(ctx, invoice)
+		for _, quote := range quotes {
+			d.StreamListItem(ctx, quote)
 		}
 		if pagination.Max != "*" {
 			break
@@ -153,29 +153,29 @@ func listInvoice(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 	return nil, nil
 }
 
-func getInvoice(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
+func getQuote(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	id := d.EqualsQuals["id"].GetInt64Value()
 
-	return getInvoiceById(ctx, d, id)
+	return getQuoteById(ctx, d, id)
 }
 
-func getInvoiceInfo(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	invoice := h.Item.(tiime.Invoice)
-	if invoice.Lines != nil {
-		return invoice, nil
+func getQuoteInfo(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
+	quote := h.Item.(tiime.Quote)
+	if quote.Lines != nil {
+		return quote, nil
 	}
-	return getInvoiceById(ctx, d, invoice.ID)
+	return getQuoteById(ctx, d, quote.ID)
 }
 
-func getInvoiceById(ctx context.Context, d *plugin.QueryData, id int64) (interface{}, error) {
+func getQuoteById(ctx context.Context, d *plugin.QueryData, id int64) (interface{}, error) {
 	client, err := connect(ctx, d)
 	if err != nil {
-		plugin.Logger(ctx).Error("tiime_invoice.getInvoiceById", "connection_error", err)
+		plugin.Logger(ctx).Error("tiime_quote.getQuoteById", "connection_error", err)
 		return nil, err
 	}
-	result, err := client.GetInvoice(ctx, id)
+	result, err := client.GetQuote(ctx, id)
 	if err != nil {
-		plugin.Logger(ctx).Error("tiime_invoice.getInvoiceById", err)
+		plugin.Logger(ctx).Error("tiime_quote.getQuoteById", err)
 		return nil, err
 	}
 

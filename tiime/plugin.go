@@ -18,6 +18,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 		TableMap: map[string]*plugin.Table{
 			"tiime_client":  tableTiimeClient(),
 			"tiime_invoice": tableTiimeInvoice(),
+			"tiime_quote":   tableTiimeQuote(),
 		},
 	}
 	return p
