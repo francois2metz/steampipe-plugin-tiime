@@ -13,7 +13,7 @@ import (
 func tableTiimeQuote() *plugin.Table {
 	return &plugin.Table{
 		Name:        "tiime_quote",
-		Description: "A qute.",
+		Description: "A quote.",
 		List: &plugin.ListConfig{
 			Hydrate: listQuote,
 			KeyColumns: []*plugin.KeyColumn{
