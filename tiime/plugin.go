@@ -11,6 +11,9 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 	p := &plugin.Plugin{
 		Name:             "steampipe-plugin-tiime",
 		DefaultTransform: transform.FromGo(),
+		DefaultIgnoreConfig: &plugin.IgnoreConfig{
+			ShouldIgnoreErrorFunc: shouldIgnoreError,
+		},
 		ConnectionConfigSchema: &plugin.ConnectionConfigSchema{
 			NewInstance: ConfigInstance,
 			Schema:      ConfigSchema,

@@ -95,6 +95,16 @@ type Pagination struct {
 	Max          string
 }
 
+type APIError struct {
+	ErrorStatus      int    `json:"error"`
+	ErrorCode        string `json:"error_code"`
+	ErrorDescription string `json:"error_description"`
+}
+
+func (e *APIError) Error() string {
+	return fmt.Sprintf("API error: %d %s", e.ErrorStatus, e.ErrorCode)
+}
+
 func New(ctx context.Context, config ClientConfig) (*Client, error) {
 	domain := "auth0.tiime.fr"
 	clientID := "iEbsbe3o66gcTBfGRa012kj1Rb6vjAND"
@@ -129,7 +139,24 @@ func New(ctx context.Context, config ClientConfig) (*Client, error) {
 
 	c.Client.
 		SetBaseURL("https://chronos-api.tiime-apps.com/v1").
-		SetCommonPathParam("company_id", strconv.Itoa(c.config.CompanyID))
+		SetCommonPathParam("company_id", strconv.Itoa(c.config.CompanyID)).
+		SetCommonErrorResult(&APIError{}).
+		OnAfterResponse(func(client *req.Client, resp *req.Response) error {
+			if resp.Err != nil { // There is an underlying error, e.g. network error or unmarshal error.
+				return nil
+			}
+			if apiErr, ok := resp.ErrorResult().(*APIError); ok {
+				// Server returns an error message, convert it to human-readable go error.
+				resp.Err = apiErr
+				return nil
+			}
+			// Corner case: neither an error state response nor a success state response,
+			// dump content to help troubleshoot.
+			if !resp.IsSuccessState() {
+				return fmt.Errorf("bad response, raw dump:\n%s", resp.Dump())
+			}
+			return nil
+		})
 
 	return c, nil
 }
