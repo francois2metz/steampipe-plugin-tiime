@@ -84,6 +84,27 @@ type Client2 struct {
 	BilledExcludingTaxes  float32 `json:"billed_excluding_taxes"`
 }
 
+type BankAccount struct {
+	ID                  int     `json:"id"`
+	SynchronizationDate string  `json:"synchronization_date"`
+	LastPushDate        string  `json:"last_push_date"`
+	ShortBankName       string  `json:"short_bank_name"`
+	BankName            string  `json:"bank_name"`
+	Disableable         bool    `json:"disableable"`
+	AuthorizedBalance   float64 `json:"authorized_balance"`
+	PendingBalance      float64 `json:"pending_balance"`
+	Closurable          bool    `json:"closurable"`
+	Iban                string  `json:"iban"`
+	Bic                 string  `json:"bic"`
+	Name                string  `json:"name"`
+	Enabled             bool    `json:"enabled"`
+	BalanceAmount       float64 `json:"balance_amount"`
+	BalanceCurrency     string  `json:"balance_currency"`
+	BalanceDate         string  `json:"balance_date"`
+	Closed              bool    `json:"closed"`
+	IsWallet            bool    `json:"is_wallet"`
+}
+
 type PaginationOpts struct {
 	Start int
 	End   int
@@ -239,4 +260,23 @@ func handlePagination(res *req.Response) (pagination Pagination, err error) {
 	contentRange := strings.NewReader(res.GetHeader("Content-range"))
 	_, err = fmt.Fscanf(contentRange, "items %d-%d/%s", &pagination.CurrentStart, &pagination.CurrentEnd, &pagination.Max)
 	return
+}
+
+func (c *Client) GetBankAccounts(ctx context.Context) (bankAccounts []BankAccount, err error) {
+	res := c.Get("/companies/{company_id}/bank_accounts").
+		SetBearerAuthToken(c.token.AccessToken).
+		Do(ctx)
+	err = res.Into(&bankAccounts)
+
+	for i, bankAccount := range bankAccounts {
+		bankAccounts[i].SynchronizationDate = fixDate(bankAccount.SynchronizationDate)
+		bankAccounts[i].LastPushDate = fixDate(bankAccount.LastPushDate)
+		bankAccounts[i].BalanceDate = fixDate(bankAccount.BalanceDate)
+	}
+
+	return
+}
+
+func fixDate(s string) string {
+	return strings.ReplaceAll(s, " ", "T")
 }
