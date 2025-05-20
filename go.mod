@@ -4,7 +4,7 @@ go 1.23.6
 
 require (
 	github.com/auth0/go-auth0 v1.20.0
-	github.com/imroc/req/v3 v3.51.0
+	github.com/imroc/req/v3 v3.52.0
 	github.com/turbot/steampipe-plugin-sdk/v5 v5.11.5
 )
 
@@ -64,6 +64,7 @@ require (
 	github.com/hashicorp/hcl/v2 v2.20.1 // indirect
 	github.com/hashicorp/yamux v0.1.1 // indirect
 	github.com/iancoleman/strcase v0.3.0 // indirect
+	github.com/icholy/digest v1.1.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/lestrrat-go/blackmagic v1.0.3 // indirect
