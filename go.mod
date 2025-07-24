@@ -1,6 +1,6 @@
 module github.com/francois2metz/steampipe-plugin-tiime
 
-go 1.23.6
+go 1.24
 
 require (
 	github.com/auth0/go-auth0 v1.25.0
