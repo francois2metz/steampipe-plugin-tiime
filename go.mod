@@ -2,7 +2,7 @@ module github.com/francois2metz/steampipe-plugin-tiime
 
 go 1.24.0
 
-toolchain go1.24.7
+toolchain go1.25.1
 
 require (
 	github.com/auth0/go-auth0 v1.28.0
