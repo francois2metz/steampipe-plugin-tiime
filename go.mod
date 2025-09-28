@@ -7,7 +7,7 @@ toolchain go1.24.7
 require (
 	github.com/auth0/go-auth0 v1.28.0
 	github.com/imroc/req/v3 v3.55.0
-	github.com/turbot/steampipe-plugin-sdk/v5 v5.13.0
+	github.com/turbot/steampipe-plugin-sdk/v5 v5.13.1
 )
 
 require (
@@ -96,7 +96,7 @@ require (
 	github.com/stevenle/topsort v0.2.0 // indirect
 	github.com/tkrajina/go-reflector v0.5.6 // indirect
 	github.com/turbot/go-kit v1.1.0 // indirect
-	github.com/ulikunitz/xz v0.5.14 // indirect
+	github.com/ulikunitz/xz v0.5.15 // indirect
 	github.com/zclconf/go-cty v1.14.4 // indirect
 	go.devnw.com/structs v1.0.0 // indirect
 	go.opencensus.io v0.24.0 // indirect
