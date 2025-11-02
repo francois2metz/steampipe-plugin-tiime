@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/auth0/go-auth0/authentication"
-	"github.com/auth0/go-auth0/authentication/oauth"
+	"github.com/auth0/go-auth0/v2/authentication"
+	"github.com/auth0/go-auth0/v2/authentication/oauth"
 	req "github.com/imroc/req/v3"
 )
 
