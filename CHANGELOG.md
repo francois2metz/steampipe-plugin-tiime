@@ -1,3 +1,10 @@
+## v0.0.4 [2025-11-02]
+
+_What's new?_
+
+- Dependencies updates
+- Add `tags` column to `tiime_quote` and `tiime_invoice`
+
 ## v0.0.3 [2025-04-08]
 
 _What's new?_
