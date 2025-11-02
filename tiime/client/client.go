@@ -38,6 +38,11 @@ type ListQueryOpts struct {
 	EmissionDate string
 }
 
+type Tag struct {
+	ID   int64  `json:"id"`
+	Name string `json:"name"`
+}
+
 type Invoice struct {
 	ID                  int64   `json:"id"`
 	ClientID            int     `json:"client_id"`
@@ -53,6 +58,7 @@ type Invoice struct {
 	Title               string  `json:"title"`
 	Status              string  `json:"status"`
 	Lines               []Line  `json:"lines"`
+	Tags                []Tag   `json:"tags"`
 }
 
 type Quote struct {
@@ -70,6 +76,7 @@ type Quote struct {
 	Title               string  `json:"title"`
 	Status              string  `json:"status"`
 	Lines               []Line  `json:"lines"`
+	Tags                []Tag   `json:"tags"`
 }
 
 type Client2 struct {

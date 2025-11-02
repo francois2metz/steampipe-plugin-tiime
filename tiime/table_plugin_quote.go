@@ -97,6 +97,12 @@ func tableTiimeQuote() *plugin.Table {
 				Description: "Lines of the quote.",
 				Hydrate:     getQuoteInfo,
 			},
+			{
+				Name:        "tags",
+				Type:        proto.ColumnType_JSON,
+				Description: "Tags of the quote.",
+				Hydrate:     getQuoteInfo,
+			},
 		},
 	}
 }

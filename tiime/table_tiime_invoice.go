@@ -97,6 +97,12 @@ func tableTiimeInvoice() *plugin.Table {
 				Description: "Lines of the invoice.",
 				Hydrate:     getInvoiceInfo,
 			},
+			{
+				Name:        "tags",
+				Type:        proto.ColumnType_JSON,
+				Description: "Tags of the invoice.",
+				Hydrate:     getInvoiceInfo,
+			},
 		},
 	}
 }
