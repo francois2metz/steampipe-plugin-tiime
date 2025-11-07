@@ -5,7 +5,7 @@ go 1.24.0
 toolchain go1.24.7
 
 require (
-	github.com/auth0/go-auth0/v2 v2.0.2
+	github.com/auth0/go-auth0/v2 v2.1.0
 	github.com/imroc/req/v3 v3.55.0
 	github.com/turbot/steampipe-plugin-sdk/v5 v5.13.1
 )
