@@ -86,8 +86,8 @@ type Client2 struct {
 	Address               string  `json:"address"`
 	PostalCode            string  `json:"postal_code"`
 	City                  string  `json:"city"`
-	Email                 string  `json:email`
-	Phone                 string  `json:phone`
+	Email                 string  `json:"email"`
+	Phone                 string  `json:"phone"`
 	PaymentStatus         string  `json:"payment_status"`
 	BalanceIncludingTaxes float64 `json:"balance_including_taxes"`
 	BilledIncludingTaxes  float32 `json:"billed_including_taxes"`
