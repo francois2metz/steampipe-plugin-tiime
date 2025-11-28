@@ -262,6 +262,15 @@ func (c *Client) GetClients(ctx context.Context, paginationOpts PaginationOpts) 
 	return
 }
 
+func (c *Client) GetClient(ctx context.Context, id int64) (client Client2, err error) {
+	err = c.Get("/companies/{company_id}/clients/{id}").
+		SetPathParam("id", strconv.FormatInt(id, 10)).
+		SetBearerAuthToken(c.token.AccessToken).
+		Do(ctx).
+		Into(&client)
+	return
+}
+
 func formatRange(paginationOpts PaginationOpts) string {
 	return fmt.Sprintf("items=%d-%d", paginationOpts.Start, paginationOpts.End)
 }
