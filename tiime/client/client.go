@@ -183,7 +183,6 @@ func New(ctx context.Context, config ClientConfig) (*Client, error) {
 
 	c.Client.
 		SetBaseURL("https://chronos-api.tiime-apps.com/v1").
-		SetCommonPathParam("company_id", strconv.Itoa(c.config.CompanyID)).
 		SetCommonErrorResult(&APIError{}).
 		OnAfterResponse(func(client *req.Client, resp *req.Response) error {
 			if resp.Err != nil { // There is an underlying error, e.g. network error or unmarshal error.
@@ -213,10 +212,11 @@ func (c *Client) GetCompanies(ctx context.Context) (companies []Company, err err
 	return
 }
 
-func (c *Client) GetInvoices(ctx context.Context, opts ListQueryOpts, paginationOpts PaginationOpts) (invoices []Invoice, pagination Pagination, err error) {
+func (c *Client) GetInvoices(ctx context.Context, companyID int64, opts ListQueryOpts, paginationOpts PaginationOpts) (invoices []Invoice, pagination Pagination, err error) {
 	res := c.Get("/companies/{company_id}/invoices").
 		SetBearerAuthToken(c.token.AccessToken).
 		SetHeader("Range", formatRange(paginationOpts)).
+		SetPathParam("company_id", strconv.FormatInt(companyID, 10)).
 		SetQueryParams(getListQueryParams(opts)).
 		Do(ctx)
 	pagination, err = handlePagination(res)
@@ -227,10 +227,11 @@ func (c *Client) GetInvoices(ctx context.Context, opts ListQueryOpts, pagination
 	return
 }
 
-func (c *Client) GetQuotes(ctx context.Context, opts ListQueryOpts, paginationOpts PaginationOpts) (quotes []Quote, pagination Pagination, err error) {
+func (c *Client) GetQuotes(ctx context.Context, companyID int64, opts ListQueryOpts, paginationOpts PaginationOpts) (quotes []Quote, pagination Pagination, err error) {
 	res := c.Get("/companies/{company_id}/quotations").
 		SetBearerAuthToken(c.token.AccessToken).
 		SetHeader("Range", formatRange(paginationOpts)).
+		SetPathParam("company_id", strconv.FormatInt(companyID, 10)).
 		SetQueryParams(getListQueryParams(opts)).
 		Do(ctx)
 	pagination, err = handlePagination(res)
@@ -252,28 +253,31 @@ func getListQueryParams(opts ListQueryOpts) map[string]string {
 	return query
 }
 
-func (c *Client) GetInvoice(ctx context.Context, id int64) (invoice Invoice, err error) {
+func (c *Client) GetInvoice(ctx context.Context, companyID int64, id int64) (invoice Invoice, err error) {
 	err = c.Get("/companies/{company_id}/invoices/{id}").
-		SetPathParam("id", strconv.FormatInt(id, 10)).
 		SetBearerAuthToken(c.token.AccessToken).
+		SetPathParam("company_id", strconv.FormatInt(companyID, 10)).
+		SetPathParam("id", strconv.FormatInt(id, 10)).
 		Do(ctx).
 		Into(&invoice)
 	return
 }
 
-func (c *Client) GetQuote(ctx context.Context, id int64) (quote Quote, err error) {
+func (c *Client) GetQuote(ctx context.Context, companyID int64, id int64) (quote Quote, err error) {
 	err = c.Get("/companies/{company_id}/quotations/{id}").
-		SetPathParam("id", strconv.FormatInt(id, 10)).
 		SetBearerAuthToken(c.token.AccessToken).
+		SetPathParam("company_id", strconv.FormatInt(companyID, 10)).
+		SetPathParam("id", strconv.FormatInt(id, 10)).
 		Do(ctx).
 		Into(&quote)
 	return
 }
 
-func (c *Client) GetClients(ctx context.Context, paginationOpts PaginationOpts) (clients []Client2, pagination Pagination, err error) {
+func (c *Client) GetClients(ctx context.Context, companyID int64, paginationOpts PaginationOpts) (clients []Client2, pagination Pagination, err error) {
 	res := c.Get("/companies/{company_id}/clients").
 		SetBearerAuthToken(c.token.AccessToken).
 		SetHeader("Range", formatRange(paginationOpts)).
+		SetPathParam("company_id", strconv.FormatInt(companyID, 10)).
 		Do(ctx)
 	pagination, err = handlePagination(res)
 	if err != nil {
@@ -283,10 +287,11 @@ func (c *Client) GetClients(ctx context.Context, paginationOpts PaginationOpts) 
 	return
 }
 
-func (c *Client) GetClient(ctx context.Context, id int64) (client Client2, err error) {
+func (c *Client) GetClient(ctx context.Context, companyID int, id int64) (client Client2, err error) {
 	err = c.Get("/companies/{company_id}/clients/{id}").
-		SetPathParam("id", strconv.FormatInt(id, 10)).
 		SetBearerAuthToken(c.token.AccessToken).
+		SetPathParam("company_id", strconv.Itoa(companyID)).
+		SetPathParam("id", strconv.FormatInt(id, 10)).
 		Do(ctx).
 		Into(&client)
 	return
@@ -302,9 +307,10 @@ func handlePagination(res *req.Response) (pagination Pagination, err error) {
 	return
 }
 
-func (c *Client) GetBankAccounts(ctx context.Context) (bankAccounts []BankAccount, err error) {
+func (c *Client) GetBankAccounts(ctx context.Context, companyID int64) (bankAccounts []BankAccount, err error) {
 	res := c.Get("/companies/{company_id}/bank_accounts").
 		SetBearerAuthToken(c.token.AccessToken).
+		SetPathParam("company_id", strconv.FormatInt(companyID, 10)).
 		Do(ctx)
 	err = res.Into(&bankAccounts)
 

@@ -37,6 +37,11 @@ func listClient(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData)
 		plugin.Logger(ctx).Error("tiime_client.listClient", "connection_error", err)
 		return nil, err
 	}
+	company_id, err := defaultCompanyID(d)
+	if err != nil {
+		plugin.Logger(ctx).Error("tiime_client.listClient", "company error", err)
+		return nil, err
+	}
 	maxItem := 100
 	opts := tiime.PaginationOpts{Start: 0, End: maxItem - 1}
 
@@ -44,7 +49,7 @@ func listClient(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData)
 		opts.End = int(*d.QueryContext.Limit)
 	}
 	for {
-		clients, pagination, err := client.GetClients(ctx, opts)
+		clients, pagination, err := client.GetClients(ctx, company_id, opts)
 		if err != nil {
 			plugin.Logger(ctx).Error("tiime_client.listClient", err)
 			return nil, err

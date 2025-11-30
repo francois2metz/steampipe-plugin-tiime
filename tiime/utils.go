@@ -10,6 +10,30 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 )
 
+func defaultCompanyID(d *plugin.QueryData) (int64, error) {
+	tiimeConfig := GetConfig(d.Connection)
+
+	var company_id int64
+
+	if os.Getenv("TIIME_COMPANY_ID") != "" {
+		var err error
+		company_id, err = strconv.ParseInt(os.Getenv("TIIME_COMPANY_ID"), 10, 0)
+		if err != nil {
+			return 0, errors.New("TIIME_COMPANY_ID environnement variable error")
+		}
+	}
+
+	if tiimeConfig.CompanyID != nil {
+		company_id = int64(*tiimeConfig.CompanyID)
+	}
+
+	if company_id == 0 {
+		return 0, errors.New("'company_id' must be set in the connection configuration. Edit your connection configuration file or set the TIIME_COMPANY_ID environment variable and then restart Steampipe")
+	}
+
+	return company_id, nil
+}
+
 func connect(ctx context.Context, d *plugin.QueryData) (*tiime.Client, error) {
 	// get tiime client from cache
 	cacheKey := "tiime"
@@ -21,23 +45,12 @@ func connect(ctx context.Context, d *plugin.QueryData) (*tiime.Client, error) {
 
 	email := os.Getenv("TIIME_EMAIL")
 	password := os.Getenv("TIIME_PASSWORD")
-	var company_id int
-	if os.Getenv("TIIME_COMPANY_ID") != "" {
-		var err error
-		company_id, err = strconv.Atoi(os.Getenv("TIIME_COMPANY_ID"))
-		if err != nil {
-			return nil, errors.New("TIIME_COMPANY_ID environnement variable error")
-		}
-	}
 
 	if tiimeConfig.Email != nil {
 		email = *tiimeConfig.Email
 	}
 	if tiimeConfig.Password != nil {
 		password = *tiimeConfig.Password
-	}
-	if tiimeConfig.CompanyID != nil {
-		company_id = *tiimeConfig.CompanyID
 	}
 
 	if email == "" {
@@ -48,14 +61,9 @@ func connect(ctx context.Context, d *plugin.QueryData) (*tiime.Client, error) {
 		return nil, errors.New("'password' must be set in the connection configuration. Edit your connection configuration file or set the TIIME_PASSWORD environment variable and then restart Steampipe")
 	}
 
-	if company_id == 0 {
-		return nil, errors.New("'company_id' must be set in the connection configuration. Edit your connection configuration file or set the TIIME_COMPANY_ID environment variable and then restart Steampipe")
-	}
-
 	config := tiime.ClientConfig{
 		Email:     email,
 		Password:  password,
-		CompanyID: company_id,
 	}
 	client, err := tiime.New(ctx, config)
 	if err != nil {

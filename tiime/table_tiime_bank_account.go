@@ -115,7 +115,12 @@ func listBankAccount(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydrate
 		plugin.Logger(ctx).Error("tiime_bank_account.listBankAccount", "connection_error", err)
 		return nil, err
 	}
-	bankAccounts, err := client.GetBankAccounts(ctx)
+	company_id, err := defaultCompanyID(d)
+	if err != nil {
+		plugin.Logger(ctx).Error("tiime_bank_account.listBankAccount", "company error", err)
+		return nil, err
+	}
+	bankAccounts, err := client.GetBankAccounts(ctx, company_id)
 	if err != nil {
 		plugin.Logger(ctx).Error("tiime_bank_account.listBankAccount", err)
 		return nil, err

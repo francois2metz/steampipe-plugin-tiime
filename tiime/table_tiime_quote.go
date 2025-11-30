@@ -113,6 +113,11 @@ func listQuote(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) 
 		plugin.Logger(ctx).Error("tiime_quote.listQuote", "connection_error", err)
 		return nil, err
 	}
+	company_id, err := defaultCompanyID(d)
+	if err != nil {
+		plugin.Logger(ctx).Error("tiime_quote.listQuote", "company error", err)
+		return nil, err
+	}
 	maxItem := 100
 	paginationOpts := tiime.PaginationOpts{Start: 0, End: maxItem - 1}
 
@@ -139,7 +144,7 @@ func listQuote(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) 
 		opts.EmissionDate = strings.Join(date_query, ",")
 	}
 	for {
-		quotes, pagination, err := client.GetQuotes(ctx, opts, paginationOpts)
+		quotes, pagination, err := client.GetQuotes(ctx, company_id, opts, paginationOpts)
 		if err != nil {
 			plugin.Logger(ctx).Error("tiime_quote.listQuote", err)
 			return nil, err
@@ -179,7 +184,13 @@ func getQuoteById(ctx context.Context, d *plugin.QueryData, id int64) (interface
 		plugin.Logger(ctx).Error("tiime_quote.getQuoteById", "connection_error", err)
 		return nil, err
 	}
-	result, err := client.GetQuote(ctx, id)
+	company_id, err := defaultCompanyID(d)
+	if err != nil {
+		plugin.Logger(ctx).Error("tiime_quote.getQuoteById", "company error", err)
+		return nil, err
+	}
+
+	result, err := client.GetQuote(ctx, company_id, id)
 	if err != nil {
 		plugin.Logger(ctx).Error("tiime_quote.getQuoteById", err)
 		return nil, err

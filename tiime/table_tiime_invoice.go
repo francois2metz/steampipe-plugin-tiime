@@ -113,6 +113,11 @@ func listInvoice(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 		plugin.Logger(ctx).Error("tiime_invoice.listInvoice", "connection_error", err)
 		return nil, err
 	}
+	company_id, err := defaultCompanyID(d)
+	if err != nil {
+		plugin.Logger(ctx).Error("tiime_invoice.listInvoice", "company error", err)
+		return nil, err
+	}
 	maxItem := 100
 	paginationOpts := tiime.PaginationOpts{Start: 0, End: maxItem - 1}
 
@@ -139,7 +144,7 @@ func listInvoice(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 		opts.EmissionDate = strings.Join(date_query, ",")
 	}
 	for {
-		invoices, pagination, err := client.GetInvoices(ctx, opts, paginationOpts)
+		invoices, pagination, err := client.GetInvoices(ctx, company_id, opts, paginationOpts)
 		if err != nil {
 			plugin.Logger(ctx).Error("tiime_invoice.listInvoice", err)
 			return nil, err
@@ -179,7 +184,12 @@ func getInvoiceById(ctx context.Context, d *plugin.QueryData, id int64) (interfa
 		plugin.Logger(ctx).Error("tiime_invoice.getInvoiceById", "connection_error", err)
 		return nil, err
 	}
-	result, err := client.GetInvoice(ctx, id)
+	company_id, err := defaultCompanyID(d)
+	if err != nil {
+		plugin.Logger(ctx).Error("tiime_invoice.getInvoiceById", "company error", err)
+		return nil, err
+	}
+	result, err := client.GetInvoice(ctx, company_id, id)
 	if err != nil {
 		plugin.Logger(ctx).Error("tiime_invoice.getInvoiceById", err)
 		return nil, err
