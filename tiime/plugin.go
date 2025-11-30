@@ -21,6 +21,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 		TableMap: map[string]*plugin.Table{
 			"tiime_bank_account": tableTiimeBankAccount(),
 			"tiime_client":       tableTiimeClient(),
+			"tiime_company":      tableTiimeCompany(),
 			"tiime_invoice":      tableTiimeInvoice(),
 			"tiime_quote":        tableTiimeQuote(),
 		},

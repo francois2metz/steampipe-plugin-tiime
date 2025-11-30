@@ -43,6 +43,19 @@ type Tag struct {
 	Name string `json:"name"`
 }
 
+type Company struct {
+	ID         int64  `json:"id"`
+	Name       string `json:"name"`
+	Siret      string `json:"siret"`
+	Street     string `json:"street"`
+	PostalCode string `json:"postal_code"`
+	City       string `json:"city"`
+	Country    string `json:"country"`
+	RcsCity    string `json:"rcs_city"`
+	Logo       string `json:"logo"`
+	LegalForm  string `json:"legal_form"`
+}
+
 type Invoice struct {
 	ID                  int64   `json:"id"`
 	ClientID            int     `json:"client_id"`
@@ -190,6 +203,14 @@ func New(ctx context.Context, config ClientConfig) (*Client, error) {
 		})
 
 	return c, nil
+}
+
+func (c *Client) GetCompanies(ctx context.Context) (companies []Company, err error) {
+	c.Get("/companies").
+		SetBearerAuthToken(c.token.AccessToken).
+		Do(ctx).
+		Into(&companies)
+	return
 }
 
 func (c *Client) GetInvoices(ctx context.Context, opts ListQueryOpts, paginationOpts PaginationOpts) (invoices []Invoice, pagination Pagination, err error) {
