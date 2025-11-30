@@ -206,7 +206,7 @@ func New(ctx context.Context, config ClientConfig) (*Client, error) {
 }
 
 func (c *Client) GetCompanies(ctx context.Context) (companies []Company, err error) {
-	c.Get("/companies").
+	err = c.Get("/companies").
 		SetBearerAuthToken(c.token.AccessToken).
 		Do(ctx).
 		Into(&companies)
