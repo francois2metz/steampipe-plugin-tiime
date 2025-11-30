@@ -21,6 +21,8 @@ func tableTiimeClient() *plugin.Table {
 			{Name: "name", Type: proto.ColumnType_STRING, Description: "Name of the client."},
 			{Name: "address", Type: proto.ColumnType_STRING, Description: "Address of the client."},
 			{Name: "city", Type: proto.ColumnType_STRING, Description: "City of the client."},
+			{Name: "email", Type: proto.ColumnType_STRING, Description: "Email of the client."},
+			{Name: "phone", Type: proto.ColumnType_STRING, Description: "Phone of the client."},
 			{Name: "payment_status", Type: proto.ColumnType_STRING, Description: "Payment status of the client."},
 			{Name: "balance_including_taxes", Type: proto.ColumnType_DOUBLE, Description: "Balance of the client."},
 			{Name: "billed_including_taxes", Type: proto.ColumnType_DOUBLE, Description: "Balance of the client."},
