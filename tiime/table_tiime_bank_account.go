@@ -10,7 +10,7 @@ import (
 func tableTiimeBankAccount() *plugin.Table {
 	return &plugin.Table{
 		Name:        "tiime_bank_account",
-		Description: ".",
+		Description: "Bank accounts associated to the company",
 		List: &plugin.ListConfig{
 			Hydrate: listBankAccount,
 		},
