@@ -1,3 +1,15 @@
+## v0.0.5 [2025-11-30]
+
+_What's new?_
+
+- Dependencies updates
+- New table added
+
+  - `tiime_company`
+
+- Fix description of the `tiime_bank_account` table
+- Add `phone` and `email` columns to the `tiime_client`
+
 ## v0.0.4 [2025-11-02]
 
 _What's new?_
