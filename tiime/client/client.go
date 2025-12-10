@@ -307,10 +307,10 @@ func (c *Client) GetClients(ctx context.Context, companyID int64, paginationOpts
 	return
 }
 
-func (c *Client) GetClient(ctx context.Context, companyID int, id int64) (client Client2, err error) {
+func (c *Client) GetClient(ctx context.Context, companyID int64, id int64) (client Client2, err error) {
 	err = c.Get("/companies/{company_id}/clients/{id}").
 		SetBearerAuthToken(c.token.AccessToken).
-		SetPathParam("company_id", strconv.Itoa(companyID)).
+		SetPathParam("company_id", strconv.FormatInt(companyID, 10)).
 		SetPathParam("id", strconv.FormatInt(id, 10)).
 		Do(ctx).
 		Into(&client)
