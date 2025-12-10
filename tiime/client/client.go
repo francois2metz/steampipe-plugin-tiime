@@ -94,18 +94,23 @@ type Quote struct {
 }
 
 type Client2 struct {
-	ID                    int64   `json:"id"`
-	Slug                  string  `json:"slug"`
-	Name                  string  `json:"name"`
-	Address               string  `json:"address"`
-	PostalCode            string  `json:"postal_code"`
-	City                  string  `json:"city"`
-	Email                 string  `json:"email"`
-	Phone                 string  `json:"phone"`
-	PaymentStatus         string  `json:"payment_status"`
-	BalanceIncludingTaxes float64 `json:"balance_including_taxes"`
-	BilledIncludingTaxes  float32 `json:"billed_including_taxes"`
-	BilledExcludingTaxes  float32 `json:"billed_excluding_taxes"`
+	ID                    int64     `json:"id"`
+	Slug                  string    `json:"slug"`
+	Name                  string    `json:"name"`
+	Address               string    `json:"address"`
+	PostalCode            string    `json:"postal_code"`
+	City                  string    `json:"city"`
+	CountryCode           string    `json:"country_code"`
+	Email                 string    `json:"email"`
+	Phone                 string    `json:"phone"`
+	ArchivedAt            time.Time `json:"archived_at"`
+	PaymentStatus         string    `json:"payment_status"`
+	BalanceIncludingTaxes float64   `json:"balance_including_taxes"`
+	BilledIncludingTaxes  float32   `json:"billed_including_taxes"`
+	BilledExcludingTaxes  float32   `json:"billed_excluding_taxes"`
+	Professional          bool      `json:"professional"`
+	Siret                 string    `json:"siret"`
+	Siren                 string    `json:"siren"`
 }
 
 type Contact struct {
