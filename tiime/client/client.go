@@ -108,6 +108,16 @@ type Client2 struct {
 	BilledExcludingTaxes  float32 `json:"billed_excluding_taxes"`
 }
 
+type Contact struct {
+	ID                int64  `json:"id"`
+	Firstname         string `json:"firstname"`
+	Lastname          string `json:"lastname"`
+	Email             string `json:"email"`
+	Phone             string `json:"phone"`
+	Job               string `json:"job"`
+	InvoicingUseEmail bool   `json:"invoicing_use_email"`
+}
+
 type BankAccount struct {
 	ID                  int64   `json:"id"`
 	SynchronizationDate string  `json:"synchronization_date"`
@@ -317,13 +327,13 @@ func (c *Client) GetClient(ctx context.Context, companyID int64, id int64) (clie
 	return
 }
 
-func formatRange(paginationOpts PaginationOpts) string {
-	return fmt.Sprintf("items=%d-%d", paginationOpts.Start, paginationOpts.End)
-}
-
-func handlePagination(res *req.Response) (pagination Pagination, err error) {
-	contentRange := strings.NewReader(res.GetHeader("Content-range"))
-	_, err = fmt.Fscanf(contentRange, "items %d-%d/%s", &pagination.CurrentStart, &pagination.CurrentEnd, &pagination.Max)
+func (c *Client) GetContacts(ctx context.Context, companyID int64, id int64) (contacts []Contact, err error) {
+	err = c.Get("/companies/{company_id}/clients/{id}/contacts").
+		SetBearerAuthToken(c.token.AccessToken).
+		SetPathParam("company_id", strconv.FormatInt(companyID, 10)).
+		SetPathParam("id", strconv.FormatInt(id, 10)).
+		Do(ctx).
+		Into(&contacts)
 	return
 }
 
@@ -340,6 +350,16 @@ func (c *Client) GetBankAccounts(ctx context.Context, companyID int64) (bankAcco
 		bankAccounts[i].BalanceDate = fixDate(bankAccount.BalanceDate)
 	}
 
+	return
+}
+
+func formatRange(paginationOpts PaginationOpts) string {
+	return fmt.Sprintf("items=%d-%d", paginationOpts.Start, paginationOpts.End)
+}
+
+func handlePagination(res *req.Response) (pagination Pagination, err error) {
+	contentRange := strings.NewReader(res.GetHeader("Content-range"))
+	_, err = fmt.Fscanf(contentRange, "items %d-%d/%s", &pagination.CurrentStart, &pagination.CurrentEnd, &pagination.Max)
 	return
 }
 
