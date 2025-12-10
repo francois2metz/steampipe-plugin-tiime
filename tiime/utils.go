@@ -62,8 +62,8 @@ func connect(ctx context.Context, d *plugin.QueryData) (*tiime.Client, error) {
 	}
 
 	config := tiime.ClientConfig{
-		Email:     email,
-		Password:  password,
+		Email:    email,
+		Password: password,
 	}
 	client, err := tiime.New(ctx, config)
 	if err != nil {
