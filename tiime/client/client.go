@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/auth0/go-auth0/v2/authentication"
 	"github.com/auth0/go-auth0/v2/authentication/oauth"
@@ -12,15 +13,16 @@ import (
 )
 
 type ClientConfig struct {
-	Email     string
-	Password  string
+	Email    string
+	Password string
 }
 
 type Client struct {
 	*req.Client
-	config  ClientConfig
-	token   *oauth.TokenSet
-	authAPI *authentication.Authentication
+	config    ClientConfig
+	token     *oauth.TokenSet
+	authAPI   *authentication.Authentication
+	expiresAt int64
 }
 
 type Line struct {
@@ -164,7 +166,7 @@ func New(ctx context.Context, config ClientConfig) (*Client, error) {
 	tokenSet, err := authAPI.OAuth.LoginWithPassword(ctx, oauth.LoginWithPasswordRequest{
 		Username: config.Email,
 		Password: config.Password,
-		Scope:    "openid email",
+		Scope:    "openid email offline_access",
 		Audience: "https://chronos/",
 		Realm:    "Chronos-prod-db",
 	}, oauth.IDTokenValidationOptions{})
@@ -174,10 +176,11 @@ func New(ctx context.Context, config ClientConfig) (*Client, error) {
 	}
 
 	c := &Client{
-		Client:  req.C(),
-		config:  config,
-		authAPI: authAPI,
-		token:   tokenSet,
+		Client:    req.C(),
+		config:    config,
+		authAPI:   authAPI,
+		token:     tokenSet,
+		expiresAt: time.Now().Unix() + tokenSet.ExpiresIn,
 	}
 
 	c.Client.
@@ -201,6 +204,24 @@ func New(ctx context.Context, config ClientConfig) (*Client, error) {
 		})
 
 	return c, nil
+}
+
+func (c *Client) ShouldRefreshToken() bool {
+	return time.Now().Unix() > c.expiresAt
+}
+
+func (c *Client) RefreshToken(ctx context.Context) error {
+	tokenSet, err := c.authAPI.OAuth.RefreshToken(ctx, oauth.RefreshTokenRequest{
+		RefreshToken: c.token.RefreshToken,
+		Scope:        "openid email offline_access",
+	}, oauth.IDTokenValidationOptions{})
+
+	if err != nil {
+		return err
+	}
+	c.token = tokenSet
+	c.expiresAt = time.Now().Unix() + tokenSet.ExpiresIn
+	return nil
 }
 
 func (c *Client) GetCompanies(ctx context.Context) (companies []Company, err error) {
