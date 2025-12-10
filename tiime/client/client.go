@@ -14,7 +14,6 @@ import (
 type ClientConfig struct {
 	Email     string
 	Password  string
-	CompanyID int
 }
 
 type Client struct {
