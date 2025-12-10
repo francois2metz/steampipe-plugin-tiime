@@ -94,7 +94,7 @@ type Quote struct {
 }
 
 type Client2 struct {
-	ID                    int     `json:"id"`
+	ID                    int64   `json:"id"`
 	Slug                  string  `json:"slug"`
 	Name                  string  `json:"name"`
 	Address               string  `json:"address"`
@@ -109,7 +109,7 @@ type Client2 struct {
 }
 
 type BankAccount struct {
-	ID                  int     `json:"id"`
+	ID                  int64   `json:"id"`
 	SynchronizationDate string  `json:"synchronization_date"`
 	LastPushDate        string  `json:"last_push_date"`
 	ShortBankName       string  `json:"short_bank_name"`
