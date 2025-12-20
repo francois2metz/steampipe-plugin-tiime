@@ -103,7 +103,7 @@ type Client2 struct {
 	CountryCode           string    `json:"country_code"`
 	Email                 string    `json:"email"`
 	Phone                 string    `json:"phone"`
-	ArchivedAt            time.Time `json:"archived_at"`
+	ArchivedAt            string    `json:"archived_at"`
 	PaymentStatus         string    `json:"payment_status"`
 	BalanceIncludingTaxes float64   `json:"balance_including_taxes"`
 	BilledIncludingTaxes  float32   `json:"billed_including_taxes"`
@@ -319,16 +319,20 @@ func (c *Client) GetClients(ctx context.Context, companyID int64, paginationOpts
 		return
 	}
 	err = res.Into(&clients)
+	for i, client := range clients {
+		clients[i].ArchivedAt = fixDate(client.ArchivedAt)
+	}
 	return
 }
 
 func (c *Client) GetClient(ctx context.Context, companyID int64, id int64) (client Client2, err error) {
-	err = c.Get("/companies/{company_id}/clients/{id}").
+	res := c.Get("/companies/{company_id}/clients/{id}").
 		SetBearerAuthToken(c.token.AccessToken).
 		SetPathParam("company_id", strconv.FormatInt(companyID, 10)).
 		SetPathParam("id", strconv.FormatInt(id, 10)).
-		Do(ctx).
-		Into(&client)
+		Do(ctx)
+	err = res.Into(&client)
+	client.ArchivedAt = fixDate(client.ArchivedAt)
 	return
 }
 
