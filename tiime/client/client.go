@@ -228,13 +228,17 @@ func (c *Client) ShouldRefreshToken() bool {
 func (c *Client) RefreshToken(ctx context.Context) error {
 	tokenSet, err := c.authAPI.OAuth.RefreshToken(ctx, oauth.RefreshTokenRequest{
 		RefreshToken: c.token.RefreshToken,
-		Scope:        "openid email offline_access",
+		Scope:        c.token.Scope,
 	}, oauth.IDTokenValidationOptions{})
 
 	if err != nil {
 		return err
 	}
-	c.token = tokenSet
+	c.token.AccessToken = tokenSet.AccessToken
+	c.token.ExpiresIn = tokenSet.ExpiresIn
+	c.token.Scope = tokenSet.Scope
+	c.token.IDToken = tokenSet.IDToken
+	c.token.TokenType = tokenSet.TokenType
 	c.expiresAt = time.Now().Unix() + tokenSet.ExpiresIn
 	return nil
 }
