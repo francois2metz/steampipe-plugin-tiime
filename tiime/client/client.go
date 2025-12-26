@@ -45,16 +45,18 @@ type Tag struct {
 }
 
 type Company struct {
-	ID         int64  `json:"id"`
-	Name       string `json:"name"`
-	Siret      string `json:"siret"`
-	Street     string `json:"street"`
-	PostalCode string `json:"postal_code"`
-	City       string `json:"city"`
-	Country    string `json:"country"`
-	RcsCity    string `json:"rcs_city"`
-	Logo       string `json:"logo"`
-	LegalForm  string `json:"legal_form"`
+	ID           int64  `json:"id"`
+	Name         string `json:"name"`
+	Siret        string `json:"siret"`
+	Street       string `json:"street"`
+	PostalCode   string `json:"postal_code"`
+	City         string `json:"city"`
+	Country      string `json:"country"`
+	RcsCity      string `json:"rcs_city"`
+	Logo         string `json:"logo"`
+	LegalForm    string `json:"legal_form"`
+	ReceiptEmail string `json:"receipt_email"`
+	PaymentEmail string `json:"payment_email"`
 }
 
 type Invoice struct {
@@ -94,23 +96,23 @@ type Quote struct {
 }
 
 type Client2 struct {
-	ID                    int64     `json:"id"`
-	Slug                  string    `json:"slug"`
-	Name                  string    `json:"name"`
-	Address               string    `json:"address"`
-	PostalCode            string    `json:"postal_code"`
-	City                  string    `json:"city"`
-	CountryCode           string    `json:"country_code"`
-	Email                 string    `json:"email"`
-	Phone                 string    `json:"phone"`
-	ArchivedAt            string    `json:"archived_at"`
-	PaymentStatus         string    `json:"payment_status"`
-	BalanceIncludingTaxes float64   `json:"balance_including_taxes"`
-	BilledIncludingTaxes  float32   `json:"billed_including_taxes"`
-	BilledExcludingTaxes  float32   `json:"billed_excluding_taxes"`
-	Professional          bool      `json:"professional"`
-	Siret                 string    `json:"siret"`
-	Siren                 string    `json:"siren"`
+	ID                    int64   `json:"id"`
+	Slug                  string  `json:"slug"`
+	Name                  string  `json:"name"`
+	Address               string  `json:"address"`
+	PostalCode            string  `json:"postal_code"`
+	City                  string  `json:"city"`
+	CountryCode           string  `json:"country_code"`
+	Email                 string  `json:"email"`
+	Phone                 string  `json:"phone"`
+	ArchivedAt            string  `json:"archived_at"`
+	PaymentStatus         string  `json:"payment_status"`
+	BalanceIncludingTaxes float64 `json:"balance_including_taxes"`
+	BilledIncludingTaxes  float32 `json:"billed_including_taxes"`
+	BilledExcludingTaxes  float32 `json:"billed_excluding_taxes"`
+	Professional          bool    `json:"professional"`
+	Siret                 string  `json:"siret"`
+	Siren                 string  `json:"siren"`
 }
 
 type Contact struct {
@@ -248,6 +250,15 @@ func (c *Client) GetCompanies(ctx context.Context) (companies []Company, err err
 		SetBearerAuthToken(c.token.AccessToken).
 		Do(ctx).
 		Into(&companies)
+	return
+}
+
+func (c *Client) GetCompany(ctx context.Context, companyID int64) (company Company, err error) {
+	err = c.Get("/companies/{company_id}").
+		SetBearerAuthToken(c.token.AccessToken).
+		SetPathParam("company_id", strconv.FormatInt(companyID, 10)).
+		Do(ctx).
+		Into(&company)
 	return
 }
 
