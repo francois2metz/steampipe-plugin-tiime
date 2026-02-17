@@ -115,6 +115,10 @@ type Client2 struct {
 	Siren                 string  `json:"siren"`
 }
 
+type ListClientOpts struct {
+	Archived bool
+}
+
 type Contact struct {
 	ID                int64  `json:"id"`
 	Firstname         string `json:"firstname"`
@@ -323,11 +327,12 @@ func (c *Client) GetQuote(ctx context.Context, companyID int64, id int64) (quote
 	return
 }
 
-func (c *Client) GetClients(ctx context.Context, companyID int64, paginationOpts PaginationOpts) (clients []Client2, pagination Pagination, err error) {
+func (c *Client) GetClients(ctx context.Context, companyID int64, opts ListClientOpts, paginationOpts PaginationOpts) (clients []Client2, pagination Pagination, err error) {
 	res := c.Get("/companies/{company_id}/clients").
 		SetBearerAuthToken(c.token.AccessToken).
 		SetHeader("Range", formatRange(paginationOpts)).
 		SetPathParam("company_id", strconv.FormatInt(companyID, 10)).
+		SetQueryParams(getClientQueryParams(opts)).
 		Do(ctx)
 	pagination, err = handlePagination(res)
 	if err != nil {
@@ -338,6 +343,14 @@ func (c *Client) GetClients(ctx context.Context, companyID int64, paginationOpts
 		clients[i].ArchivedAt = fixDate(client.ArchivedAt)
 	}
 	return
+}
+
+func getClientQueryParams(opts ListClientOpts) map[string]string {
+	var query = make(map[string]string)
+	if opts.Archived != true {
+		query["archived"] = "false"
+	}
+	return query
 }
 
 func (c *Client) GetClient(ctx context.Context, companyID int64, id int64) (client Client2, err error) {

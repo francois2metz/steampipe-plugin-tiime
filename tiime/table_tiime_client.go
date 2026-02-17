@@ -43,13 +43,14 @@ func listClient(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData)
 		return nil, err
 	}
 	maxItem := 100
-	opts := tiime.PaginationOpts{Start: 0, End: maxItem - 1}
+	paginationOpts := tiime.PaginationOpts{Start: 0, End: maxItem - 1}
 
-	if d.QueryContext.Limit != nil && *d.QueryContext.Limit < int64(opts.End) {
-		opts.End = int(*d.QueryContext.Limit)
+	if d.QueryContext.Limit != nil && *d.QueryContext.Limit < int64(paginationOpts.End) {
+		paginationOpts.End = int(*d.QueryContext.Limit)
 	}
+	opts := tiime.ListClientOpts{}
 	for {
-		clients, pagination, err := client.GetClients(ctx, company_id, opts)
+		clients, pagination, err := client.GetClients(ctx, company_id, opts, paginationOpts)
 		if err != nil {
 			plugin.Logger(ctx).Error("tiime_client.listClient", err)
 			return nil, err
@@ -60,8 +61,8 @@ func listClient(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData)
 		if pagination.Max != "*" {
 			break
 		}
-		opts.Start += maxItem
-		opts.End += maxItem
+		paginationOpts.Start += maxItem
+		paginationOpts.End += maxItem
 		if d.RowsRemaining(ctx) <= 0 {
 			break
 		}
