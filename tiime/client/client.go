@@ -116,7 +116,7 @@ type Client2 struct {
 }
 
 type ListClientOpts struct {
-	Archived bool
+	Archived string // "true", "false" or an empty string
 }
 
 type Contact struct {
@@ -347,8 +347,8 @@ func (c *Client) GetClients(ctx context.Context, companyID int64, opts ListClien
 
 func getClientQueryParams(opts ListClientOpts) map[string]string {
 	var query = make(map[string]string)
-	if opts.Archived != true {
-		query["archived"] = "false"
+	if opts.Archived != "" {
+		query["archived"] = opts.Archived
 	}
 	return query
 }
