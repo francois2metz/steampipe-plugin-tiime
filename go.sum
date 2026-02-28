@@ -628,8 +628,8 @@ github.com/apache/arrow/go/v11 v11.0.0/go.mod h1:Eg5OsL5H+e299f7u5ssuXsuHQVEGC4x
 github.com/apache/thrift v0.16.0/go.mod h1:PHK3hniurgQaNMZYaCLEqXKsYK8upmhPbmdP2FXSqgU=
 github.com/apparentlymart/go-textseg/v15 v15.0.0 h1:uYvfpb3DyLSCGWnctWKGj857c6ew1u1fNQOlOtuGxQY=
 github.com/apparentlymart/go-textseg/v15 v15.0.0/go.mod h1:K8XmNZdhEBkdlyDdvbmmsvpAG721bKi0joRfFdHIWJ4=
-github.com/auth0/go-auth0/v2 v2.5.0 h1:IBfiYGsqFwOu4hsxV1JDtB6+ayRinybUIUCU/fRBE8Y=
-github.com/auth0/go-auth0/v2 v2.5.0/go.mod h1:XVRck9fw1EIw1z4guYcbKFGmElnexb+xOvQ/0U1hHd0=
+github.com/auth0/go-auth0/v2 v2.6.0 h1:KCoLxTcH8qXPYbwKZxxFrL/6P+P+Zc58BQPL6w0Kt30=
+github.com/auth0/go-auth0/v2 v2.6.0/go.mod h1:XVRck9fw1EIw1z4guYcbKFGmElnexb+xOvQ/0U1hHd0=
 github.com/aws/aws-sdk-go v1.44.122/go.mod h1:y4AeaBuwd2Lk+GepC1E9v0qOiTws0MIWAX4oIKwKHZo=
 github.com/aws/aws-sdk-go v1.44.183 h1:mUk45JZTIMMg9m8GmrbvACCsIOKtKezXRxp06uI5Ahk=
 github.com/aws/aws-sdk-go v1.44.183/go.mod h1:aVsgQcEevwlmQ7qHE9I3h+dtQgpqhFB+i8Phjh7fkwI=
