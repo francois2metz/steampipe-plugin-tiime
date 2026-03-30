@@ -3,7 +3,7 @@ module github.com/francois2metz/steampipe-plugin-tiime
 go 1.26.0
 
 require (
-	github.com/auth0/go-auth0/v2 v2.6.0
+	github.com/auth0/go-auth0/v2 v2.7.0
 	github.com/imroc/req/v3 v3.57.0
 	github.com/turbot/steampipe-plugin-sdk/v5 v5.14.0
 )
@@ -113,7 +113,7 @@ require (
 	golang.org/x/exp v0.0.0-20241215155358-4a5509556b9e // indirect
 	golang.org/x/mod v0.30.0 // indirect
 	golang.org/x/net v0.48.0 // indirect
-	golang.org/x/oauth2 v0.35.0 // indirect
+	golang.org/x/oauth2 v0.36.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect
 	golang.org/x/sys v0.40.0 // indirect
 	golang.org/x/text v0.32.0 // indirect
