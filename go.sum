@@ -40,8 +40,8 @@ github.com/andybalholm/brotli v1.2.0 h1:ukwgCxwYrmACq68yiUqwIWnGY0cTPox/M94sVwTo
 github.com/andybalholm/brotli v1.2.0/go.mod h1:rzTDkvFWvIrjDXZHkuS16NPggd91W3kUSvPlQ1pLaKY=
 github.com/apparentlymart/go-textseg/v15 v15.0.0 h1:uYvfpb3DyLSCGWnctWKGj857c6ew1u1fNQOlOtuGxQY=
 github.com/apparentlymart/go-textseg/v15 v15.0.0/go.mod h1:K8XmNZdhEBkdlyDdvbmmsvpAG721bKi0joRfFdHIWJ4=
-github.com/auth0/go-auth0/v2 v2.8.0 h1:PBja6whKi9/i+ZTnGgk/+hG496gvTscA3oviOpoDp34=
-github.com/auth0/go-auth0/v2 v2.8.0/go.mod h1:Q/Y3VZVoI3sw87VyTPhx2TQL6Sq4Q/iCP67rW2gcn+M=
+github.com/auth0/go-auth0/v2 v2.9.0 h1:aRVaXqSx682Zg6TStcmrYMNiNuSy5xch+Ee+aIoZTDU=
+github.com/auth0/go-auth0/v2 v2.9.0/go.mod h1:Q/Y3VZVoI3sw87VyTPhx2TQL6Sq4Q/iCP67rW2gcn+M=
 github.com/aws/aws-sdk-go-v2 v1.41.4 h1:10f50G7WyU02T56ox1wWXq+zTX9I1zxG46HYuG1hH/k=
 github.com/aws/aws-sdk-go-v2 v1.41.4/go.mod h1:mwsPRE8ceUUpiTgF7QmQIJ7lgsKUPQOUl3o72QBrE1o=
 github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.7.7 h1:3kGOqnh1pPeddVa/E37XNTaWJ8W6vrbYV9lJEkCnhuY=
