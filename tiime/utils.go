@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	tiime "github.com/francois2metz/steampipe-plugin-tiime/tiime/client"
-	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v6/plugin"
 )
 
 func defaultCompanyID(d *plugin.QueryData) (int64, error) {
