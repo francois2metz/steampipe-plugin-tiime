@@ -1,8 +1,8 @@
 package tiime
 
 import (
-	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
-	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/schema"
+	"github.com/turbot/steampipe-plugin-sdk/v6/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v6/plugin/schema"
 )
 
 type tiimeConfig struct {
@@ -29,9 +29,9 @@ func ConfigInstance() interface{} {
 
 // GetConfig :: retrieve and cast connection config from query data
 func GetConfig(connection *plugin.Connection) tiimeConfig {
-	if connection == nil || connection.Config == nil {
+	if connection == nil || connection.GetConfig() == nil {
 		return tiimeConfig{}
 	}
-	config, _ := connection.Config.(tiimeConfig)
+	config, _ := connection.GetConfig().(tiimeConfig)
 	return config
 }
