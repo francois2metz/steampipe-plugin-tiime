@@ -4,7 +4,7 @@ go 1.26.0
 
 require (
 	github.com/auth0/go-auth0/v2 v2.14.0
-	github.com/imroc/req/v3 v3.58.0
+	github.com/imroc/req/v3 v3.59.0
 	github.com/turbot/steampipe-plugin-sdk/v6 v6.0.0
 )
 
@@ -111,7 +111,7 @@ require (
 	github.com/prometheus/common v0.48.0 // indirect
 	github.com/prometheus/procfs v0.12.0 // indirect
 	github.com/quic-go/qpack v0.6.0 // indirect
-	github.com/quic-go/quic-go v0.59.1 // indirect
+	github.com/quic-go/quic-go v0.60.0 // indirect
 	github.com/refraction-networking/utls v1.8.2 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
