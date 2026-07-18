@@ -3,7 +3,6 @@ module github.com/francois2metz/steampipe-plugin-tiime
 go 1.26.0
 
 require (
-	github.com/auth0/go-auth0/v2 v2.14.0
 	github.com/auth0/go-auth0/v3 v3.0.0
 	github.com/imroc/req/v3 v3.59.0
 	github.com/turbot/steampipe-plugin-sdk/v6 v6.0.0
