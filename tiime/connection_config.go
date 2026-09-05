@@ -6,12 +6,16 @@ import (
 )
 
 type tiimeConfig struct {
+	ClientID  *string `cty:"client_id"`
 	Email     *string `cty:"email"`
 	Password  *string `cty:"password"`
 	CompanyID *int    `cty:"company_id"`
 }
 
 var ConfigSchema = map[string]*schema.Attribute{
+	"client_id": {
+		Type: schema.TypeString,
+	},
 	"email": {
 		Type: schema.TypeString,
 	},

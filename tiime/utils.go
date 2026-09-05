@@ -43,9 +43,13 @@ func connect(ctx context.Context, d *plugin.QueryData) (*tiime.Client, error) {
 
 	tiimeConfig := GetConfig(d.Connection)
 
+	clientID := os.Getenv("TIIME_CLIENT_ID")
 	email := os.Getenv("TIIME_EMAIL")
 	password := os.Getenv("TIIME_PASSWORD")
 
+	if tiimeConfig.ClientID != nil {
+		clientID = *tiimeConfig.ClientID
+	}
 	if tiimeConfig.Email != nil {
 		email = *tiimeConfig.Email
 	}
@@ -62,6 +66,7 @@ func connect(ctx context.Context, d *plugin.QueryData) (*tiime.Client, error) {
 	}
 
 	config := tiime.ClientConfig{
+		ClientID: clientID,
 		Email:    email,
 		Password: password,
 	}
