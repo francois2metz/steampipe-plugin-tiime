@@ -13,6 +13,7 @@ import (
 )
 
 type ClientConfig struct {
+	ClientID string
 	Email    string
 	Password string
 }
@@ -174,6 +175,10 @@ func (e *APIError) Error() string {
 func New(ctx context.Context, config ClientConfig) (*Client, error) {
 	domain := "auth0.tiime.fr"
 	clientID := "iEbsbe3o66gcTBfGRa012kj1Rb6vjAND"
+
+	if config.ClientID != "" {
+		clientID = config.ClientID
+	}
 
 	authAPI, err := authentication.New(
 		ctx,
