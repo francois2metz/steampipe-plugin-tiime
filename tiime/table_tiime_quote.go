@@ -49,7 +49,7 @@ func tableTiimeQuote() *plugin.Table {
 			{
 				Name:        "emission_date",
 				Type:        proto.ColumnType_TIMESTAMP,
-				Description: "Emission date of the qute.",
+				Description: "Emission date of the quote.",
 			},
 			{
 				Name:        "template",
