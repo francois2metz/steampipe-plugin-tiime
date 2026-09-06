@@ -151,6 +151,31 @@ type BankAccount struct {
 	IsWallet            bool    `json:"is_wallet"`
 }
 
+type TransactionsMetadata struct {
+	HasMultipleCardholder bool    `json:"has_multiple_cardholder"`
+	TotalAmount           float64 `json:"total_amount"`
+}
+
+type Transaction struct {
+	ID                 int64   `json:"id"`
+	Status             string  `json:"status"`
+	TransactionDate    string  `json:"transaction_date"`
+	RealizationDate    string  `json:"realization_date"`
+	VATApplicationDate string  `json:"vat_application_date"`
+	Amount             float64 `json:"amount"`
+	Currency           string  `json:"currency"`
+	Comment            string  `json:"comment"`
+}
+
+type Transactions struct {
+	Metadata     TransactionsMetadata `json:"metadata"`
+	Transactions []Transaction        `json:"transactions"`
+}
+
+type ListTransactionOpts struct {
+	TransactionDate string
+}
+
 type PaginationOpts struct {
 	Start int
 	End   int
@@ -393,6 +418,30 @@ func (c *Client) GetBankAccounts(ctx context.Context, companyID int64) (bankAcco
 	}
 
 	return
+}
+
+func (c *Client) GetBankTransactions(ctx context.Context, companyID int64, opts ListTransactionOpts, paginationOpts PaginationOpts) (transactions Transactions, pagination Pagination, err error) {
+	res := c.Get("/accounts/companies/{company_id}/bank_transactions").
+		SetBearerAuthToken(c.token.AccessToken).
+		SetHeader("Range", formatRange(paginationOpts)).
+		SetHeader("Accept", "application/vnd.tiime.bank_transactions.v2+json").
+		SetPathParam("company_id", strconv.FormatInt(companyID, 10)).
+		SetQueryParams(getListTransactionParams(opts)).
+		Do(ctx)
+	pagination, err = handlePagination(res)
+	if err != nil {
+		return
+	}
+	err = res.Into(&transactions)
+	return
+}
+
+func getListTransactionParams(opts ListTransactionOpts) map[string]string {
+	var query = make(map[string]string)
+	if opts.TransactionDate != "" {
+		query["date"] = opts.TransactionDate
+	}
+	return query
 }
 
 func formatRange(paginationOpts PaginationOpts) string {
