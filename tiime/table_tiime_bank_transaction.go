@@ -22,7 +22,7 @@ func tableTiimeBankTransaction() *plugin.Table {
 		},
 		Get: &plugin.GetConfig{
 			KeyColumns: plugin.SingleColumn("id"),
-			Hydrate:    getQuote,
+			Hydrate:    getBankTransaction,
 		},
 		Columns: []*plugin.Column{
 			{
@@ -121,4 +121,25 @@ func listBankTransaction(ctx context.Context, d *plugin.QueryData, _ *plugin.Hyd
 		}
 	}
 	return nil, nil
+}
+
+func getBankTransaction(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
+	client, err := connect(ctx, d)
+	if err != nil {
+		plugin.Logger(ctx).Error("tiime_bank_transaction.getBankTransaction", "connection_error", err)
+		return nil, err
+	}
+	company_id, err := defaultCompanyID(d)
+	if err != nil {
+		plugin.Logger(ctx).Error("tiime_bank_transaction.getBankTransaction", "company error", err)
+		return nil, err
+	}
+	id := d.EqualsQuals["id"].GetInt64Value()
+	result, err := client.GetBankTransaction(ctx, company_id, id)
+	if err != nil {
+		plugin.Logger(ctx).Error("tiime_bank_transaction.getBankTransaction", err)
+		return nil, err
+	}
+
+	return result, nil
 }

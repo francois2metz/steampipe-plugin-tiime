@@ -437,6 +437,16 @@ func (c *Client) GetBankTransactions(ctx context.Context, companyID int64, opts 
 	return
 }
 
+func (c *Client) GetBankTransaction(ctx context.Context, companyID int64, id int64) (transaction Transaction, err error) {
+	res := c.Get("/accounts/companies/{company_id}/bank_transactions/{id}").
+		SetBearerAuthToken(c.token.AccessToken).
+		SetPathParam("company_id", strconv.FormatInt(companyID, 10)).
+		SetPathParam("id", strconv.FormatInt(id, 10)).
+		Do(ctx)
+	err = res.Into(&transaction)
+	return
+}
+
 func getListTransactionParams(opts ListTransactionOpts) map[string]string {
 	var query = make(map[string]string)
 	if opts.TransactionDate != "" {
