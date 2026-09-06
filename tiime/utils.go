@@ -38,7 +38,15 @@ func connect(ctx context.Context, d *plugin.QueryData) (*tiime.Client, error) {
 	// get tiime client from cache
 	cacheKey := "tiime"
 	if cachedData, ok := d.ConnectionManager.Cache.Get(cacheKey); ok {
-		return cachedData.(*tiime.Client), nil
+		client := cachedData.(*tiime.Client)
+		if client.ShouldRefreshToken() {
+			err := client.RefreshToken(ctx)
+			if err == nil {
+				return client, nil
+			}
+		} else {
+			return client, nil
+		}
 	}
 
 	tiimeConfig := GetConfig(d.Connection)
