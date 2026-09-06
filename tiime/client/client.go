@@ -165,6 +165,7 @@ type Transaction struct {
 	Amount             float64 `json:"amount"`
 	Currency           string  `json:"currency"`
 	Comment            string  `json:"comment"`
+	Tags               []Tag   `json:"tags"`
 }
 
 type Transactions struct {
