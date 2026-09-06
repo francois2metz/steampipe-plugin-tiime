@@ -1,3 +1,11 @@
+## v0.0.6 [2026-09-06]
+
+_What's new?_
+
+- Dependencies updates
+- Add `client_id` config
+- Refresh the token automatically
+
 ## v0.0.5 [2025-11-30]
 
 _What's new?_
