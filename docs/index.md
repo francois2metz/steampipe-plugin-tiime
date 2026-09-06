@@ -74,6 +74,10 @@ Installing the latest tiime plugin will create a config file (`~/.steampipe/conf
 connection "tiime" {
     plugin = "ghcr.io/francois2metz/tiime"
 
+    # The client id (optional)
+    # This can also be set via the `TIIME_CLIENT_ID` environment variable.
+    # client_id = ""
+
     # The Tiime email
     # This can also be set via the `TIIME_EMAIL` environment variable.
     # email = "test@example.net"
