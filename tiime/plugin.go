@@ -24,6 +24,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			"tiime_client":           tableTiimeClient(),
 			"tiime_company":          tableTiimeCompany(),
 			"tiime_invoice":          tableTiimeInvoice(),
+			"tiime_label":            tableTiimeLabel(),
 			"tiime_quote":            tableTiimeQuote(),
 		},
 	}

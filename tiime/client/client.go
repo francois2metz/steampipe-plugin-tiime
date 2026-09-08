@@ -177,6 +177,18 @@ type ListTransactionOpts struct {
 	TransactionDate string
 }
 
+type Label struct {
+	ID            int64  `json:"id"`
+	Disabled      bool   `json:"disabled"`
+	InvoiceClient bool   `json:"invoice_client"`
+	Type          string `json:"type"`
+	Predicable    bool   `json:"predicable"`
+	IsStandard    bool   `json:"is_standard"`
+	Label         string `json:"label"`
+	Sales         bool   `json:"sales"`
+	Name          string `json:"name"`
+}
+
 type PaginationOpts struct {
 	Start int
 	End   int
@@ -453,6 +465,15 @@ func getListTransactionParams(opts ListTransactionOpts) map[string]string {
 		query["date"] = opts.TransactionDate
 	}
 	return query
+}
+
+func (c *Client) GetLabels(ctx context.Context, companyID int64) (labels []Label, err error) {
+	res := c.Get("/accounts/companies/{company_id}/labels").
+		SetBearerAuthToken(c.token.AccessToken).
+		SetPathParam("company_id", strconv.FormatInt(companyID, 10)).
+		Do(ctx)
+	err = res.Into(&labels)
+	return
 }
 
 func formatRange(paginationOpts PaginationOpts) string {
