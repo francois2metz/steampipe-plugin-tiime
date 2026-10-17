@@ -3,7 +3,7 @@ module github.com/francois2metz/steampipe-plugin-tiime
 go 1.26.0
 
 require (
-	github.com/auth0/go-auth0/v3 v3.8.0
+	github.com/auth0/go-auth0/v3 v3.9.0
 	github.com/imroc/req/v3 v3.61.0
 	github.com/turbot/steampipe-plugin-sdk/v6 v6.1.0
 )
@@ -137,7 +137,7 @@ require (
 	go.opentelemetry.io/otel/sdk/metric v1.45.0 // indirect
 	go.opentelemetry.io/otel/trace v1.45.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.11.0 // indirect
-	golang.org/x/crypto v0.55.0 // indirect
+	golang.org/x/crypto v0.56.0 // indirect
 	golang.org/x/exp v0.0.0-20241215155358-4a5509556b9e // indirect
 	golang.org/x/mod v0.38.0 // indirect
 	golang.org/x/net v0.58.0 // indirect
