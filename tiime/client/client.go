@@ -106,6 +106,7 @@ type Client2 struct {
 	CountryCode           string  `json:"country_code"`
 	Email                 string  `json:"email"`
 	Phone                 string  `json:"phone"`
+	Archived              bool    `json:"archived"`
 	ArchivedAt            string  `json:"archived_at"`
 	PaymentStatus         string  `json:"payment_status"`
 	BalanceIncludingTaxes float64 `json:"balance_including_taxes"`
@@ -114,6 +115,7 @@ type Client2 struct {
 	Professional          bool    `json:"professional"`
 	Siret                 string  `json:"siret"`
 	Siren                 string  `json:"siren"`
+	Note                  string  `json:"note"`
 }
 
 type ListClientOpts struct {
