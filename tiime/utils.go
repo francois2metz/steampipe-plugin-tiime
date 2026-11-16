@@ -37,7 +37,7 @@ func defaultCompanyID(d *plugin.QueryData) (int64, error) {
 func connect(ctx context.Context, d *plugin.QueryData) (*tiime.Client, error) {
 	// get tiime client from cache
 	cacheKey := "tiime"
-	if cachedData, ok := d.ConnectionManager.Cache.Get(cacheKey); ok {
+	if cachedData, ok := d.ConnectionCache.Get(ctx, cacheKey); ok {
 		client := cachedData.(*tiime.Client)
 		if client.ShouldRefreshToken() {
 			err := client.RefreshToken(ctx)
@@ -84,7 +84,10 @@ func connect(ctx context.Context, d *plugin.QueryData) (*tiime.Client, error) {
 	}
 
 	// Save to cache
-	d.ConnectionManager.Cache.Set(cacheKey, client)
+	err = d.ConnectionCache.Set(ctx, cacheKey, client)
+	if err != nil {
+		return nil, err
+	}
 
 	return client, nil
 }
