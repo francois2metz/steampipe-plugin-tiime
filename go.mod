@@ -5,7 +5,7 @@ go 1.26.0
 require (
 	github.com/auth0/go-auth0/v3 v3.13.0
 	github.com/imroc/req/v3 v3.61.0
-	github.com/turbot/steampipe-plugin-sdk/v6 v6.2.2
+	github.com/turbot/steampipe-plugin-sdk/v6 v6.3.0
 )
 
 require (
